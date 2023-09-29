@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import Layout from '../../components/Layout/Layout'
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from "axios";
 import { useAuth } from '../../context/auth';
 
@@ -11,7 +11,8 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [auth, setAuth] = useAuth()
     const navigate = useNavigate();
-
+    const location = useLocation();
+    console.log(location);
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -20,11 +21,11 @@ const Login = () => {
                 toast.success(resp.data.message);
                 setAuth({
                     ...auth,
-                    user:resp.data.user,
-                    token:resp.data.token
+                    user: resp.data.user,
+                    token: resp.data.token
                 })
                 localStorage.setItem('auth', JSON.stringify(resp.data));
-                navigate("/")
+                navigate(location.state || "/")
             } else {
                 toast.success(resp.data.message);
             }
@@ -34,9 +35,9 @@ const Login = () => {
         }
     }
 
-  return (
-    <Layout>
-         <div className='registration'>
+    return (
+        <Layout>
+            <div className='registration'>
                 <h1>Login Page</h1>
                 <form onSubmit={handleFormSubmit}>
                     <div className="mb-3">
@@ -49,11 +50,15 @@ const Login = () => {
                         <input type="checkbox" className="form-check-input" id="exampleCheck1" />
                         <label className="form-check-label" for="exampleCheck1">Check me out</label>
                     </div> */}
+                    <div className='mb-3'>
+                        <button type="submit" onClick={() => { navigate('/forgot-password') }} className="btn btn-primary">Forgot Password</button>
+
+                    </div>
                     <button type="submit" className="btn btn-primary">Login</button>
                 </form>
             </div>
-    </Layout>
-  )
+        </Layout>
+    )
 }
 
 export default Login
